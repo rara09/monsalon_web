@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text',
+    'Segoe UI', sans-serif;
+  background-color: #f5f5fa;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+
+/* max width according to media for the body  */
