@@ -1,35 +1,39 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { AuthLayout } from '../../layouts/AuthLayout';
 import { Button } from '../../components';
+import type { LoginData, SubmitHandler } from '../../types/authType';
+import { useAuth } from '../../hooks/useAuth';
+import { login } from '../../services/authService';
 
-type LoginForm = {
-  email: string;
-  password: string;
-};
-
-const defaultValues: LoginForm = {
+const defaultValues: LoginData = {
   email: 'raoulgbadou@gmail.com',
   password: '12345678',
 };
 
 export default function LoginPage() {
-  const [form, setForm] = useState<LoginForm>(defaultValues);
+  const [form, setForm] = useState<LoginData>(defaultValues);
+  const { login: setAuth } = useAuth();
+  // const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  interface SubmitHandler {
-    (e: React.FormEvent<HTMLFormElement>): void;
-  }
-
-  const handleSubmit: SubmitHandler = (e) => {
+  const handleSubmit: SubmitHandler = async (e) => {
+    // setLoading(true);
     e.preventDefault();
-    // TODO: brancher sur POST /api/auth/login
+    try {
+      const data = await login(form);
+      const { access_token, ...user } = data;
 
-    console.log('Login payload', form);
+      setAuth(access_token, user);
+      return <Navigate to='/' replace />;
+    } catch (error) {
+      console.error('Login error', error);
+    }
+    // setLoading(false);
   };
 
   return (
@@ -47,7 +51,7 @@ export default function LoginPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit} className='space-y-5'>
+      <form onSubmit={handleSubmit} className='space-y-5' method='POST'>
         <div className='space-y-1.5'>
           <label className='text-xs font-medium text-slate-700'>
             Email professionnel

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 import { AppLogo } from '../components';
+import { useAuth } from '../hooks/useAuth';
+import { Navigate } from 'react-router-dom';
 
 type AuthLayoutProps = {
   children: ReactNode;
@@ -8,6 +10,12 @@ type AuthLayoutProps = {
 };
 
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
+  const { token } = useAuth();
+
+  if (token) {
+    return <Navigate to='/' replace />;
+  }
+
   return (
     <div className='min-h-screen bg-linear-to-b from-rose-50 via-white to-slate-50 text-slate-900'>
       {/* <header className="flex items-center justify-between px-6 py-4">
@@ -35,9 +43,6 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
           {/* <span className='inline-flex items-center rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-600'>
             Édition 2024
           </span> */}
-          <div className='flex w-full justify-center'>
-            <AppLogo />
-          </div>
           <div className='space-y-3'>
             <h1 className='text-3xl font-semibold leading-tight tracking-tight md:text-4xl'>
               Rejoignez le futur de votre salon.
@@ -85,6 +90,9 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
 
         <section className='flex-1'>
           <div className='rounded-3xl bg-white p-6 shadow-lg md:p-8'>
+            <div className='flex w-full justify-center mb-5'>
+              <AppLogo />
+            </div>
             <div className='mb-6 space-y-1'>
               <h2 className='text-xl font-semibold tracking-tight md:text-2xl'>
                 {title}
