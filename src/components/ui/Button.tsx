@@ -15,13 +15,10 @@ export default function Button({
   const styles =
     variant === 'primary'
       ? 'bg-rose-500 text-white shadow-sm hover:bg-rose-600'
-      : 'border border-slate-200 bg-white text-slate-700 hover:bg-slate-50';
+      : 'border border-slate-200 bg-white text-slate-500 hover:bg-slate-50';
 
   return (
-    <button
-      className={`${base} ${styles} ${className}`}
-      {...props}
-    >
+    <button className={`${base} ${styles} ${className}`} {...props}>
       {children}
     </button>
   );

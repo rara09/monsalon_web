@@ -40,15 +40,15 @@ export default defineConfig([
       // other options...
     },
   },
-])
+]);
 ```
 
 You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
 ```js
 // eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+import reactX from 'eslint-plugin-react-x';
+import reactDom from 'eslint-plugin-react-dom';
 
 export default defineConfig([
   globalIgnores(['dist']),
@@ -69,5 +69,54 @@ export default defineConfig([
       // other options...
     },
   },
-])
+]);
 ```
+
+## code à revoir
+
+import { createContext, useContext, useState, useEffect } from 'react'
+
+const AuthContext = createContext()
+
+export function AuthProvider({ children }) {
+const [user, setUser] = useState(null)
+const [loading, setLoading] = useState(true)
+
+    const login = async (credentials) => {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(credentials)
+        })
+        const data = await response.json()
+        setUser(data.user)
+        localStorage.setItem('token', data.token)
+    }
+
+    const logout = () => {
+        setUser(null)
+        localStorage.removeItem('token')
+    }
+
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        if (token) {
+            // Verify token and set user
+        }
+        setLoading(false)
+    }, [])
+
+    return (
+        <AuthContext.Provider value={{ user, login, logout, loading }}>
+            {children}
+        </AuthContext.Provider>
+    )
+
+}
+
+export const useAuth = () => useContext(AuthContext)
+
+## to do this night
+
+drawer menu for medium screen and mobile
+user profile page + edit profile + change password + delete account + logout

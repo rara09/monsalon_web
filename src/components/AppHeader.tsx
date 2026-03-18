@@ -62,11 +62,11 @@ const AppHeader = () => {
               placeholder='Rechercher un client...'
             />
           </div> */}
-          <button className='hidden rounded-full bg-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-rose-600 sm:inline-flex'>
+          {/* <button className='hidden rounded-full bg-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-rose-600 sm:inline-flex'>
             Nouveau Client
-          </button>
-          <button className='flex h-9 w-9 items-center justify-center rounded-full bg-emerald-50 text-sm font-semibold text-emerald-700'>
-            U
+          </button> */}
+          <button className='flex h-9 w-9 items-center justify-center rounded-full bg-rose-100 text-sm font-semibold text-rose-700'>
+            US
           </button>
         </div>
       </div>

@@ -1,10 +1,15 @@
-import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../../layouts/AuthLayout';
 import { Button } from '../../components';
-import type { RegisterData, SubmitHandler } from '../../types/authType';
+import type { RegisterData } from '../../types/authType';
 import { register } from '../../services/authService';
 import { useAuth } from '../../hooks/useAuth';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  registerSchema,
+  type RegisterForm,
+} from '../../schemas/registerSchema';
 
 const defaultValues: RegisterData = {
   email: 'raoulgbadou2@gmail.com',
@@ -14,22 +19,27 @@ const defaultValues: RegisterData = {
 };
 
 export default function RegisterPage() {
-  const [form, setForm] = useState<RegisterData>(defaultValues);
   const { login: setAuth } = useAuth();
+  const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    register: formRegister,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterForm>({
+    resolver: zodResolver(registerSchema),
+    defaultValues,
+  });
 
-  const handleSubmit: SubmitHandler = async (e) => {
-    e.preventDefault();
+  const onSubmit = async (formData: RegisterForm) => {
+    if (isSubmitting) return;
+
     try {
-      const data = await register(form);
+      const data = await register(formData as RegisterData);
       const { access_token, ...user } = data;
 
       setAuth(access_token, user);
-      return <Navigate to='/' replace />;
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Register error', error);
     }
@@ -50,29 +60,41 @@ export default function RegisterPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit} className='space-y-4' method='POST'>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='space-y-4'
+        method='POST'
+      >
         <div className='grid gap-4 sm:grid-cols-2'>
+          <div className='space-y-1.5'>
+            <label className='text-xs font-medium text-slate-700'>Nom</label>
+            <input
+              type='text'
+              {...formRegister('lastName')}
+              className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
+              placeholder='Dupont'
+              required
+            />
+            {errors.lastName && (
+              <p className='text-red-500 italic text-xs'>
+                {errors.lastName.message}
+              </p>
+            )}
+          </div>
           <div className='space-y-1.5'>
             <label className='text-xs font-medium text-slate-700'>Prénom</label>
             <input
-              name='firstName'
-              value={form.firstName}
-              onChange={handleChange}
+              type='text'
+              {...formRegister('firstName')}
               className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
               placeholder='Jean'
               required
             />
-          </div>
-          <div className='space-y-1.5'>
-            <label className='text-xs font-medium text-slate-700'>Nom</label>
-            <input
-              name='lastName'
-              value={form.lastName}
-              onChange={handleChange}
-              className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg:white focus:ring'
-              placeholder='Dupont'
-              required
-            />
+            {errors.firstName && (
+              <p className='text-red-500 italic text-xs'>
+                {errors.firstName.message}
+              </p>
+            )}
           </div>
         </div>
 
@@ -82,13 +104,16 @@ export default function RegisterPage() {
           </label>
           <input
             type='email'
-            name='email'
-            value={form.email}
-            onChange={handleChange}
+            {...formRegister('email')}
             className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
             placeholder='jean.dupont@entreprise.com'
             required
           />
+          {errors.email && (
+            <p className='text-red-500 italic text-xs'>
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
         <div className='space-y-1.5'>
@@ -98,18 +123,21 @@ export default function RegisterPage() {
           <div className='relative'>
             <input
               type='password'
-              name='password'
-              value={form.password}
-              onChange={handleChange}
-              className='w-full rounded-lg border border-rose-200 bg-rose-50 px-3 py-2 pr-10 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
+              {...formRegister('password')}
+              className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 pr-10 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
               placeholder='••••••••'
-              minLength={8}
+              minLength={6}
               required
             />
             <span className='pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-rose-400'>
               ⦿⦿⦿
             </span>
           </div>
+          {errors.password && (
+            <p className='text-red-500 italic text-xs'>
+              {errors.password.message}
+            </p>
+          )}
           <div className='flex items-center justify-between text-[11px]'>
             <span className='text-rose-500'>Mot de passe sécurisé</span>
             <div className='flex flex-1 items-center gap-1 pl-3'>
@@ -158,8 +186,12 @@ export default function RegisterPage() {
         </div>
 
         <div className='pt-1'>
-          <Button type='submit' className='w-full justify-center'>
-            S&apos;inscrire maintenant
+          <Button
+            type='submit'
+            className='w-full justify-center'
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Inscription en cours…' : "S'inscrire maintenant"}
           </Button>
         </div>
 

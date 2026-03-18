@@ -1,16 +1,15 @@
 import { useCallback, useEffect, useState } from 'react';
-import { getClients } from '../services/clientService';
-import type { Client } from '../types/userType';
+import { getSales, type Sale } from '../services/saleService';
 
-export function useClients() {
-  const [clients, setClients] = useState<Client[]>([]);
+export function useSales() {
+  const [sales, setSales] = useState<Sale[]>([]);
   const [loading, setLoading] = useState(true);
 
   const refetch = useCallback(async () => {
     setLoading(true);
     try {
-      const data = await getClients();
-      setClients(data);
+      const data = await getSales();
+      setSales(data);
     } finally {
       setLoading(false);
     }
@@ -20,5 +19,6 @@ export function useClients() {
     void refetch();
   }, [refetch]);
 
-  return { clients, loading, refetch };
+  return { sales, loading, refetch };
 }
+

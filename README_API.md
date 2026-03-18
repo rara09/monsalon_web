@@ -172,8 +172,26 @@ Content-Type: application/json
   "amount": 25,
   "paymentMethod": "Espèces",
   "serviceDate": "2024-01-15T14:30:00Z",
-  "stylistId": 1,
   "clientId": 1
+}
+```
+
+### Ajouter un produit
+
+```bash
+POST /api/products
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "category": "Hair",
+  "name": "Shampooing",
+  "description": "Shampooing doux pour cheveux fins",
+  "costPrice": 12.50,
+	"sellingPrice": 12.50,
+  "stockLevel": 50,
+	"image": "image.jpeg",
+	"lowStockAlert": 3
 }
 ```
 
@@ -257,6 +275,7 @@ npm run migration:revert
 Voir [DEPLOYMENT.md](./DEPLOYMENT.md) pour le guide complet de déploiement.
 
 **Résumé rapide :**
+
 ```bash
 # 1. Backup de la base de données
 mysqldump -u root -p mysaloon > backup.sql

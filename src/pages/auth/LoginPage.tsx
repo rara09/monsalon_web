@@ -1,10 +1,12 @@
-import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { AuthLayout } from '../../layouts/AuthLayout';
 import { Button } from '../../components';
-import type { LoginData, SubmitHandler } from '../../types/authType';
+import type { LoginData } from '../../types/authType';
 import { useAuth } from '../../hooks/useAuth';
 import { login } from '../../services/authService';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginForm } from '../../schemas/loginSchema';
+import { useForm } from 'react-hook-form';
 
 const defaultValues: LoginData = {
   email: 'raoulgbadou@gmail.com',
@@ -12,28 +14,34 @@ const defaultValues: LoginData = {
 };
 
 export default function LoginPage() {
-  const [form, setForm] = useState<LoginData>(defaultValues);
+  // const [isSubmitting, setIsSubmitting] = useState(false);
   const { login: setAuth } = useAuth();
-  // const [loading, setLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginForm>({
+    resolver: zodResolver(loginSchema),
+    defaultValues,
+  });
 
-  const handleSubmit: SubmitHandler = async (e) => {
-    // setLoading(true);
-    e.preventDefault();
+  const onSubmit = async (formData: LoginForm) => {
+    // e.preventDefault();
+    if (isSubmitting) return;
+
+    // setIsSubmitting(true);
     try {
-      const data = await login(form);
+      const data = await login(formData);
       const { access_token, ...user } = data;
 
       setAuth(access_token, user);
       return <Navigate to='/' replace />;
     } catch (error) {
       console.error('Login error', error);
+    } finally {
+      // setIsSubmitting(false);
     }
-    // setLoading(false);
   };
 
   return (
@@ -51,20 +59,27 @@ export default function LoginPage() {
         </>
       }
     >
-      <form onSubmit={handleSubmit} className='space-y-5' method='POST'>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className='space-y-5'
+        method='POST'
+      >
         <div className='space-y-1.5'>
           <label className='text-xs font-medium text-slate-700'>
             Email professionnel
           </label>
           <input
-            type='email'
-            name='email'
-            value={form.email}
-            onChange={handleChange}
+            type='text'
+            {...register('email')}
             className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
-            placeholder='jean.dupont@entreprise.com'
+            placeholder='codjo@entreprise.com'
             required
           />
+          {errors.email && (
+            <p className='text-red-500 italic text-xs'>
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
         <div className='space-y-1.5'>
@@ -81,13 +96,16 @@ export default function LoginPage() {
           </div>
           <input
             type='password'
-            name='password'
-            value={form.password}
-            onChange={handleChange}
+            {...register('password')}
             className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
             placeholder='••••••••'
             required
           />
+          {errors.password && (
+            <p className='text-red-500 italic text-xs'>
+              {errors.password.message}
+            </p>
+          )}
         </div>
 
         <div className='flex items-center gap-2 pt-1 text-[11px] text-slate-500'>
@@ -99,8 +117,12 @@ export default function LoginPage() {
         </div>
 
         <div className='pt-2'>
-          <Button type='submit' className='w-full justify-center'>
-            Se connecter
+          <Button
+            type='submit'
+            className='w-full justify-center cursor-pointer'
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Connexion en cours…' : 'Se connecter'}
           </Button>
         </div>
       </form>
