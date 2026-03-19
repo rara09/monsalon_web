@@ -1,7 +1,8 @@
 import type { ReactNode } from 'react';
 import { AppLogo } from '../components';
 import { useAuth } from '../hooks/useAuth';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 
 type AuthLayoutProps = {
   children: ReactNode;
@@ -11,6 +12,7 @@ type AuthLayoutProps = {
 
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
   const { token } = useAuth();
+  const location = useLocation();
 
   if (token) {
     return <Navigate to='/' replace />;
@@ -38,7 +40,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
         </Link>
       </header> */}
 
-      <main className='mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-4 md:flex-row md:items-center md:pt-5'>
+      <main className='mx-auto flex max-w-6xl flex-col gap-8 px-4 pb-12 pt-4 md:flex-row md:items-center md:pt-5 overflow-hidden'>
         <section className='flex-1 space-y-6 rounded-3xl p-6 md:p-8'>
           {/* <span className='inline-flex items-center rounded-full bg-rose-100 px-3 py-1 text-xs font-semibold text-rose-600'>
             Édition 2024
@@ -79,7 +81,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
             </li>
           </ul>
 
-          <div className='overflow-hidden rounded-2xl bg-slate-900 text-slate-50'>
+          <div className='hidden md:block overflow-hidden rounded-2xl bg-slate-900 text-slate-50'>
             <div className="h-36 w-full bg-[url('https://images.pexels.com/photos/3993447/pexels-photo-3993447.jpeg?auto=compress&cs=tinysrgb&w=800')] bg-cover bg-center" />
             <p className='px-4 py-3 text-[11px] text-slate-300'>
               &quot;L&apos;outil indispensable pour simplifier la gestion de mon
@@ -89,20 +91,34 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
         </section>
 
         <section className='flex-1'>
-          <div className='rounded-3xl bg-white p-6 shadow-lg md:p-8'>
-            <div className='flex w-full justify-center mb-5'>
-              <AppLogo />
-            </div>
-            <div className='mb-6 space-y-1'>
-              <h2 className='text-xl font-semibold tracking-tight md:text-2xl'>
-                {title}
-              </h2>
-              {subtitle && (
-                <p className='text-xs text-slate-500 md:text-sm'>{subtitle}</p>
-              )}
-            </div>
-            {children}
-          </div>
+          <AnimatePresence mode='wait'>
+            <motion.div
+              key={location.key ?? location.pathname}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+              className='will-change-transform'
+              style={{ opacity: 0 }}
+            >
+              <div className='rounded-3xl bg-white p-6 shadow-lg md:p-8'>
+                <div className='flex w-full justify-center mb-5'>
+                  <AppLogo />
+                </div>
+                <div className='mb-6 space-y-1'>
+                  <h2 className='text-xl font-semibold tracking-tight md:text-2xl'>
+                    {title}
+                  </h2>
+                  {subtitle && (
+                    <p className='text-xs text-slate-500 md:text-sm'>
+                      {subtitle}
+                    </p>
+                  )}
+                </div>
+                {children}
+              </div>
+            </motion.div>
+          </AnimatePresence>
         </section>
       </main>
 

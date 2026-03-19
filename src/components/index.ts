@@ -10,6 +10,9 @@ export { default as StatCard } from './ui/StatCard';
 export { default as DataTable } from './ui/DataTable';
 export { default as Pagination } from './ui/Pagination';
 export { default as BaseDropdown } from './ui/BaseDropdown';
+export { default as UserAvatar } from './ui/UserAvatar';
+export { default as BasePopover } from './ui/BasePopover';
+export { default as ToastProvider, useToast } from './ui/ToastProvider';
 
 // modals
 export { default as BaseModal } from './modals/BaseModal';

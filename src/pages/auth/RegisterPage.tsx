@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../../layouts/AuthLayout';
 import { Button } from '../../components';
@@ -10,15 +11,10 @@ import {
   registerSchema,
   type RegisterForm,
 } from '../../schemas/registerSchema';
-
-const defaultValues: RegisterData = {
-  email: 'raoulgbadou2@gmail.com',
-  password: '12345678',
-  firstName: 'R',
-  lastName: 'G',
-};
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function RegisterPage() {
+  const [showPassword, setShowPassword] = useState(false);
   const { login: setAuth } = useAuth();
   const navigate = useNavigate();
 
@@ -28,7 +24,6 @@ export default function RegisterPage() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
-    defaultValues,
   });
 
   const onSubmit = async (formData: RegisterForm) => {
@@ -122,30 +117,36 @@ export default function RegisterPage() {
           </label>
           <div className='relative'>
             <input
-              type='password'
+              type={showPassword ? 'text' : 'password'}
               {...formRegister('password')}
               className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 pr-10 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
               placeholder='••••••••'
               minLength={6}
               required
+              autoComplete='new-password'
             />
-            <span className='pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-rose-400'>
-              ⦿⦿⦿
-            </span>
+            <button
+              type='button'
+              onClick={() => setShowPassword((v) => !v)}
+              className='absolute inset-y-0 right-2 flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+              aria-label={
+                showPassword
+                  ? 'Masquer le mot de passe'
+                  : 'Afficher le mot de passe'
+              }
+            >
+              {showPassword ? (
+                <EyeOff className='h-4 w-4' aria-hidden />
+              ) : (
+                <Eye className='h-4 w-4' aria-hidden />
+              )}
+            </button>
           </div>
           {errors.password && (
             <p className='text-red-500 italic text-xs'>
               {errors.password.message}
             </p>
           )}
-          <div className='flex items-center justify-between text-[11px]'>
-            <span className='text-rose-500'>Mot de passe sécurisé</span>
-            <div className='flex flex-1 items-center gap-1 pl-3'>
-              <span className='h-1 flex-1 rounded-full bg-rose-400' />
-              <span className='h-1 flex-1 rounded-full bg-rose-300' />
-              <span className='h-1 flex-1 rounded-full bg-rose-200' />
-            </div>
-          </div>
         </div>
 
         {/* <div className='space-y-1.5'>
@@ -195,7 +196,7 @@ export default function RegisterPage() {
           </Button>
         </div>
 
-        <div className='flex items-center gap-3 pt-3 text-[11px] text-slate-400'>
+        {/* <div className='flex items-center gap-3 pt-3 text-[11px] text-slate-400'>
           <div className='h-px flex-1 bg-slate-200' />
           <span>OU CONTINUER AVEC</span>
           <div className='h-px flex-1 bg-slate-200' />
@@ -208,7 +209,7 @@ export default function RegisterPage() {
           <button className='flex items-center justify-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-2 text-slate-700 hover:bg-slate-50'>
             <span>f</span> Facebook
           </button>
-        </div>
+        </div> */}
       </form>
     </AuthLayout>
   );

@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Link, Navigate } from 'react-router-dom';
 import { AuthLayout } from '../../layouts/AuthLayout';
 import { Button } from '../../components';
@@ -7,6 +8,7 @@ import { login } from '../../services/authService';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginForm } from '../../schemas/loginSchema';
 import { useForm } from 'react-hook-form';
+import { Eye, EyeOff } from 'lucide-react';
 
 const defaultValues: LoginData = {
   email: 'raoulgbadou@gmail.com',
@@ -14,7 +16,7 @@ const defaultValues: LoginData = {
 };
 
 export default function LoginPage() {
-  // const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const { login: setAuth } = useAuth();
 
   const {
@@ -94,13 +96,30 @@ export default function LoginPage() {
               Mot de passe oublié ?
             </button>
           </div>
-          <input
-            type='password'
-            {...register('password')}
-            className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
-            placeholder='••••••••'
-            required
-          />
+          <div className='relative'>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              {...register('password')}
+              className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 pr-10 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
+              placeholder='••••••••'
+              required
+              autoComplete='current-password'
+            />
+            <button
+              type='button'
+              onClick={() => setShowPassword((v) => !v)}
+              className='absolute inset-y-0 right-2 flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
+              aria-label={
+                showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+              }
+            >
+              {showPassword ? (
+                <EyeOff className='h-4 w-4' aria-hidden />
+              ) : (
+                <Eye className='h-4 w-4' aria-hidden />
+              )}
+            </button>
+          </div>
           {errors.password && (
             <p className='text-red-500 italic text-xs'>
               {errors.password.message}

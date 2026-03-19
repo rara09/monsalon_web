@@ -116,7 +116,51 @@ const [loading, setLoading] = useState(true)
 
 export const useAuth = () => useContext(AuthContext)
 
-## to do this night
+## to do sooner
 
-drawer menu for medium screen and mobile
-user profile page + edit profile + change password + delete account + logout
+Voici des propositions de fonctionnalités pour votre application :
+👥 Gestion des clients
+
+Fiche client (nom, contact, historique des visites)
+Système de fidélité (points, récompenses)
+Rappels automatiques (anniversaire, dernière visite)
+
+📅 Rendez-vous
+
+Calendrier de réservation par coiffeur/esthéticienne
+Réservation en ligne pour les clients
+Notifications SMS/email de rappel
+Gestion des annulations et reports
+
+💇 Services
+
+Catalogue de prestations avec tarifs
+Durée estimée par prestation
+Assignation par compétence du personnel
+
+🛍️ Vente de produits
+
+Gestion du stock (alertes rupture)
+Caisse intégrée (prestation + produit en une facture)
+Historique des ventes par produit
+
+👨‍💼 Personnel
+
+Planning et gestion des horaires
+Suivi des performances (CA par employé)
+Gestion des commissions
+
+📊 Tableau de bord
+
+Chiffre d'affaires du jour/mois
+Rendez-vous à venir
+Produits les plus vendus
+Taux d'occupation des créneaux
+
+🧾 Facturation
+
+Génération de factures/reçus PDF
+Historique des paiements
+Plusieurs modes de paiement (cash, mobile money, carte)
+
+rsync -avz dist/ raoul@72.61.195.127:/var/www/monsalon/
