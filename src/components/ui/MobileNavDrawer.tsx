@@ -1,6 +1,16 @@
 import { Dialog, DialogPanel, Transition, TransitionChild } from '@headlessui/react';
 import { Fragment } from 'react';
-import { X, LayoutDashboard, Scissors, ShoppingBag, Users, Boxes, Wallet, Receipt } from 'lucide-react';
+import {
+  X,
+  LayoutDashboard,
+  Scissors,
+  ShoppingBag,
+  Users,
+  Boxes,
+  Wallet,
+  Receipt,
+  CalendarClock,
+} from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
 type MobileNavDrawerProps = {
@@ -13,6 +23,7 @@ const links = [
   { to: '/services', label: 'Prestations', icon: Scissors },
   { to: '/sales', label: 'Ventes', icon: ShoppingBag },
   { to: '/clients', label: 'Clients', icon: Users },
+  { to: '/appointments', label: 'Rendez-vous', icon: CalendarClock },
   { to: '/stock', label: 'Stock', icon: Boxes },
   { to: '/debts', label: 'Dettes', icon: Wallet },
   { to: '/expenses', label: 'Dépenses', icon: Receipt },

@@ -13,9 +13,9 @@ export interface RegisterData {
   // confirmPassword: string;
 }
 
-export interface AuthContextType {
+/** @deprecated Utiliser `AuthContextType` dans `context/AuthContextValue.tsx` */
+export interface LegacyAuthContextType {
   user: User;
-  token: string | null;
   loading: boolean;
   login: (loginData: LoginData) => Promise<void>;
   logout: () => void;

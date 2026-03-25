@@ -1,12 +1,13 @@
 import { useAuth } from '../hooks/useAuth';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = () => {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
-  const logoutUser = () => {
-    logout();
-    return <Navigate to='/auth/login' replace />;
+  const logoutUser = async () => {
+    await logout();
+    navigate('/auth/login', { replace: true });
   };
   return (
     <footer className='mt-8 border-t border-slate-200 bg-white'>

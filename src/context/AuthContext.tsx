@@ -1,37 +1,52 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import type { User } from '../types/userType';
 import { AuthContext } from './AuthContextValue';
+import { logout as logoutApi, me } from '../services/authService';
+import { userFromAuthResponse } from '../utils/authResponse';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem('token'),
-  );
-  const [user, setUser] = useState<User | null>(() => {
-    const raw = localStorage.getItem('user');
-    if (!raw) return null;
-    try {
-      return JSON.parse(raw) as User;
-    } catch {
-      return null;
-    }
-  });
+  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
-  const loginUser = (token: string, user: User) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    setToken(token);
-    setUser(user);
-  };
-
-  const logout = () => {
+  /** Ancienne auth JWT en localStorage : on nettoie pour éviter confusion */
+  useEffect(() => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    setToken(null);
+  }, []);
+
+  /** Hydratation session via cookie HTTP-only */
+  useEffect(() => {
+    me()
+      .then((data) => {
+        try {
+          setUser(userFromAuthResponse(data));
+        } catch {
+          setUser(null);
+        }
+      })
+      .catch(() => {
+        setUser(null);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const loginUser = (nextUser: User) => {
+    setUser(nextUser);
+  };
+
+  const logoutUser = async () => {
+    try {
+      await logoutApi();
+    } catch {
+      // On déconnecte quand même côté UI (cookie peut déjà être expiré)
+    }
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login: loginUser, logout }}>
+    <AuthContext.Provider
+      value={{ user, loading, login: loginUser, logout: logoutUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

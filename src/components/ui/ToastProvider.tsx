@@ -81,7 +81,7 @@ export default function ToastProvider({ children }: { children: ReactNode }) {
       {children}
 
       <div
-        className='fixed right-4 top-4 z-[9999] flex w-[min(420px,calc(100vw-2rem))] flex-col gap-2'
+        className='fixed right-4 top-4 z-9999 flex w-[min(420px,calc(100vw-2rem))] flex-col gap-2'
         role='region'
         aria-label='Notifications'
       >

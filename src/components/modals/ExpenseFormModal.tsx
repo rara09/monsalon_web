@@ -42,12 +42,18 @@ const ExpenseFormModal = ({
       amount: expense?.amount ?? '',
       category: expense?.category ?? '',
       expenseDate: expense?.expenseDate
-        ? expense.expenseDate.slice(0, 16)
-        : new Date().toISOString().slice(0, 16),
+        ? expense.expenseDate
+        : new Date().toDateString(),
       notes: expense?.notes ?? '',
       receipt: expense?.receipt ?? '',
     }),
-    [expense?.amount, expense?.category, expense?.expenseDate, expense?.notes, expense?.receipt],
+    [
+      expense?.amount,
+      expense?.category,
+      expense?.expenseDate,
+      expense?.notes,
+      expense?.receipt,
+    ],
   );
 
   const [form, setForm] = useState<ExpenseFormData>(initialForm);
@@ -58,17 +64,14 @@ const ExpenseFormModal = ({
   }, [initialForm, isOpen]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
-      [name]:
-        name === 'amount'
-          ? value === ''
-            ? ''
-            : Number(value)
-          : value,
+      [name]: name === 'amount' ? (value === '' ? '' : Number(value)) : value,
     }));
   };
 
@@ -81,7 +84,7 @@ const ExpenseFormModal = ({
       const payload: CreateExpensePayload = {
         amount: typeof form.amount === 'number' ? form.amount : 0,
         category: (form.category || 'Autre') as ExpenseCategory,
-        expenseDate: new Date(form.expenseDate).toISOString(),
+        expenseDate: form.expenseDate,
         notes: form.notes || undefined,
         receipt: form.receipt || undefined,
         userId,
@@ -168,7 +171,7 @@ const ExpenseFormModal = ({
                 Date &amp; heure
               </label>
               <input
-                type='datetime-local'
+                type='date'
                 name='expenseDate'
                 value={form.expenseDate}
                 onChange={handleChange}
@@ -193,9 +196,7 @@ const ExpenseFormModal = ({
           </div>
 
           <div className='space-y-1.5'>
-            <label className='text-xs font-medium text-slate-700'>
-              Notes
-            </label>
+            <label className='text-xs font-medium text-slate-700'>Notes</label>
             <textarea
               name='notes'
               value={form.notes}
@@ -234,4 +235,3 @@ const ExpenseFormModal = ({
 };
 
 export default ExpenseFormModal;
-

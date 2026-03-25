@@ -11,10 +11,18 @@ type AuthLayoutProps = {
 };
 
 export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
-  const { token } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (token) {
+  if (loading) {
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-linear-to-b from-rose-50 via-white to-slate-50 text-sm text-slate-500'>
+        Chargement…
+      </div>
+    );
+  }
+
+  if (user) {
     return <Navigate to='/' replace />;
   }
 

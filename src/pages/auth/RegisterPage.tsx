@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../../layouts/AuthLayout';
 import { Button } from '../../components';
 import type { RegisterData } from '../../types/authType';
-import { register } from '../../services/authService';
+import { register, userFromAuthResponse } from '../../services/authService';
 import { useAuth } from '../../hooks/useAuth';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -31,9 +31,8 @@ export default function RegisterPage() {
 
     try {
       const data = await register(formData as RegisterData);
-      const { access_token, ...user } = data;
-
-      setAuth(access_token, user);
+      const user = userFromAuthResponse(data);
+      setAuth(user);
       navigate('/', { replace: true });
     } catch (error) {
       console.error('Register error', error);

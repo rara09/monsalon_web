@@ -1,23 +1,24 @@
 import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthLayout } from '../../layouts/AuthLayout';
 import { Button } from '../../components';
 import type { LoginData } from '../../types/authType';
 import { useAuth } from '../../hooks/useAuth';
-import { login } from '../../services/authService';
+import { login, userFromAuthResponse } from '../../services/authService';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, type LoginForm } from '../../schemas/loginSchema';
 import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
 
 const defaultValues: LoginData = {
-  email: 'raoulgbadou@gmail.com',
+  email: 'raoulgbadou2@gmail.com',
   password: '12345678',
 };
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const { login: setAuth } = useAuth();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -29,20 +30,14 @@ export default function LoginPage() {
   });
 
   const onSubmit = async (formData: LoginForm) => {
-    // e.preventDefault();
     if (isSubmitting) return;
-
-    // setIsSubmitting(true);
     try {
       const data = await login(formData);
-      const { access_token, ...user } = data;
-
-      setAuth(access_token, user);
-      return <Navigate to='/' replace />;
+      const user = userFromAuthResponse(data);
+      setAuth(user);
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Login error', error);
-    } finally {
-      // setIsSubmitting(false);
     }
   };
 
@@ -110,7 +105,9 @@ export default function LoginPage() {
               onClick={() => setShowPassword((v) => !v)}
               className='absolute inset-y-0 right-2 flex items-center rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600'
               aria-label={
-                showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'
+                showPassword
+                  ? 'Masquer le mot de passe'
+                  : 'Afficher le mot de passe'
               }
             >
               {showPassword ? (

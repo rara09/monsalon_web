@@ -52,7 +52,7 @@ export default function BaseDropdown({
               <div key={idx} className='px-1 py-1 '>
                 <MenuItem>
                   {({ active }) => (
-                    <button
+                    <div
                       className={`${
                         active ? 'bg-rose-500 text-white' : 'text-slate-600'
                       } group flex w-full items-center rounded-md px-2 py-2 text-sm hover:text-white`}
@@ -60,7 +60,7 @@ export default function BaseDropdown({
                     >
                       <div className='pr-2 '>{item.icon}</div>
                       <div className=''>{item.label}</div>
-                    </button>
+                    </div>
                   )}
                 </MenuItem>
               </div>

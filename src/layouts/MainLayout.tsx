@@ -9,10 +9,18 @@ import { useAuth } from '../hooks/useAuth';
 // };
 
 export function MainLayout() {
-  const { token } = useAuth();
+  const { user, loading } = useAuth();
   const location = useLocation();
 
-  if (!token) {
+  if (loading) {
+    return (
+      <div className='flex min-h-screen items-center justify-center bg-slate-50 text-sm text-slate-500'>
+        Chargement…
+      </div>
+    );
+  }
+
+  if (!user) {
     return <Navigate to='/auth/login' replace />;
   }
 

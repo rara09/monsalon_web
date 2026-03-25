@@ -47,9 +47,7 @@ const DebtFormModal = ({
       clientId: debt?.clientId ? String(debt.clientId) : '',
       serviceId: debt?.serviceId ? String(debt.serviceId) : '',
       saleId: debt?.saleId ? String(debt.saleId) : '',
-      dueDate: debt?.dueDate
-        ? debt.dueDate.slice(0, 16)
-        : new Date().toISOString().slice(0, 16),
+      dueDate: debt?.dueDate ? debt.dueDate : new Date().toDateString(),
       notes: debt?.notes ?? '',
     }),
     [
@@ -70,17 +68,15 @@ const DebtFormModal = ({
   }, [initialForm, isOpen]);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
       ...prev,
       [name]:
-        name === 'totalAmount'
-          ? value === ''
-            ? ''
-            : Number(value)
-          : value,
+        name === 'totalAmount' ? (value === '' ? '' : Number(value)) : value,
     }));
   };
 
@@ -96,13 +92,13 @@ const DebtFormModal = ({
         clientId: Number(form.clientId),
         serviceId: form.serviceId ? Number(form.serviceId) : undefined,
         saleId: form.saleId ? Number(form.saleId) : undefined,
-        dueDate: new Date(form.dueDate).toISOString(),
+        dueDate: form.dueDate,
         notes: form.notes || undefined,
       };
+      console.log(payload);
 
       if (mode === 'edit') {
-        if (!debt?.id)
-          throw new Error('Debt id manquant pour la mise à jour');
+        if (!debt?.id) throw new Error('Debt id manquant pour la mise à jour');
         await updateDebt(debt.id, payload);
         toast('success', 'Dette mise à jour avec succès.');
       } else {
@@ -122,7 +118,9 @@ const DebtFormModal = ({
 
   return (
     <BaseModal
-      title={mode === 'edit' ? 'Modifier la dette' : 'Ajouter une nouvelle dette'}
+      title={
+        mode === 'edit' ? 'Modifier la dette' : 'Ajouter une nouvelle dette'
+      }
       isOpen={isOpen}
       closeModal={closeModal}
     >
@@ -221,7 +219,7 @@ const DebtFormModal = ({
                 Échéance
               </label>
               <input
-                type='datetime-local'
+                type='date'
                 name='dueDate'
                 value={form.dueDate}
                 onChange={handleChange}
@@ -232,9 +230,7 @@ const DebtFormModal = ({
           </div>
 
           <div className='space-y-1.5'>
-            <label className='text-xs font-medium text-slate-700'>
-              Notes
-            </label>
+            <label className='text-xs font-medium text-slate-700'>Notes</label>
             <textarea
               name='notes'
               value={form.notes}
@@ -273,4 +269,3 @@ const DebtFormModal = ({
 };
 
 export default DebtFormModal;
-

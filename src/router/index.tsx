@@ -2,6 +2,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import { MainLayout } from '../layouts';
 import DashboardPage from '../pages/DashboardPage';
 import { ClientsPage } from '../pages/ClientsPage';
+import AppointmentsPage from '../pages/AppointmentsPage';
 import ServicesPage from '../pages/ServicesPage';
 import SalesPage from '../pages/SalesPage';
 import StockPage from '../pages/StockPage';
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
       {
         path: 'clients',
         element: <ClientsPage />,
+      },
+      {
+        path: 'appointments',
+        element: <AppointmentsPage />,
       },
       {
         path: 'services',
