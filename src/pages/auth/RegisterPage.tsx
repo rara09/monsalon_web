@@ -33,7 +33,7 @@ export default function RegisterPage() {
       const data = await register(formData as RegisterData);
       const user = userFromAuthResponse(data);
       setAuth(user);
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       console.error('Register error', error);
     }

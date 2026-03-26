@@ -35,7 +35,7 @@ export default function LoginPage() {
       const data = await login(formData);
       const user = userFromAuthResponse(data);
       setAuth(user);
-      navigate('/', { replace: true });
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       console.error('Login error', error);
     }

@@ -1,14 +1,14 @@
-// import type { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Footer, AppHeader } from '../components';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useAuth } from '../hooks/useAuth';
 
-// type MainLayoutProps = {
-//   children: ReactNode;
-// };
+type MainLayoutProps = {
+  children: ReactNode;
+};
 
-export function MainLayout() {
+export function MainLayout({ children }: MainLayoutProps) {
   const { user, loading } = useAuth();
   const location = useLocation();
 
@@ -41,7 +41,7 @@ export function MainLayout() {
             // Force l'opacité à 0 dès le premier paint pour éviter le "flash".
             style={{ opacity: 0 }}
           >
-            <Outlet />
+            {children}
           </motion.div>
         </AnimatePresence>
       </main>

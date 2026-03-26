@@ -43,7 +43,7 @@ const AppHeader = () => {
         </div>
 
         <nav className='hidden items-center gap-6 text-sm font-medium text-slate-500 md:flex'>
-          <NavItem to='/'>Tableau de bord</NavItem>
+          <NavItem to='/dashboard'>Tableau de bord</NavItem>
           <NavItem to='/services'>Prestations</NavItem>
           <NavItem to='/appointments'>RDV</NavItem>
           <NavItem to='/sales'>Ventes</NavItem>
@@ -54,7 +54,7 @@ const AppHeader = () => {
         </nav>
 
         <div className='flex items-center justify-end gap-2 md:gap-3'>
-          <div className='rounde-full hover:bg-slate-100 cursor-pointer p-1.5 text-slate-500'>
+          <div className='rounded-full p-2 hover:bg-slate-100 cursor-pointer text-slate-500'>
             <Bell className='w-5 h-5 text-slate-500' />
           </div>
           {/* <div className='hidden max-w-xs flex-1 items-center rounded-full bg-slate-50 px-3 py-2 text-xs text-slate-400 ring-1 ring-slate-200 focus-within:ring-rose-400 md:flex'>

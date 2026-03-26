@@ -19,7 +19,7 @@ type MobileNavDrawerProps = {
 };
 
 const links = [
-  { to: '/', label: 'Tableau de bord', icon: LayoutDashboard },
+  { to: '/dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
   { to: '/services', label: 'Prestations', icon: Scissors },
   { to: '/sales', label: 'Ventes', icon: ShoppingBag },
   { to: '/clients', label: 'Clients', icon: Users },

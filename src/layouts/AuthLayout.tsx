@@ -23,7 +23,7 @@ export function AuthLayout({ children, title, subtitle }: AuthLayoutProps) {
   }
 
   if (user) {
-    return <Navigate to='/' replace />;
+    return <Navigate to='/dashboard' replace />;
   }
 
   return (

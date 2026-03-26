@@ -21,3 +21,13 @@ export { default as ProductFormModal } from './modals/ProductFormModal';
 export { default as SaleFormModal } from './modals/SaleFormModal';
 export { default as DebtFormModal } from './modals/DebtFormModal';
 export { default as ExpenseFormModal } from './modals/ExpenseFormModal';
+
+// Landing components
+export { default as LandingHeader } from './landing/LandingHeader';
+export { default as AboutUs } from './landing/AboutUs';
+export { default as LandingFooter } from './landing/LandingFooter';
+export { default as LandingHero } from './landing/LandingHero';
+export { default as LandingServices } from './landing/LandingServices';
+export { default as LandingProducts } from './landing/LandingProducts';
+export { default as LandingTestimonials } from './landing/LandingTestimonials';
+export { default as LandingContact } from './landing/LandingContact';
