@@ -9,11 +9,12 @@ export type Product = {
   sellingPrice: number;
   stockLevel: number;
   image?: string | null;
-  lowStockAlert?: number;
+  lowStockAlert?: boolean;
+  lowStockThreshold?: number;
 };
 
-export const getProducts = async () => {
-  const res = await api.get<Product[]>('/products');
+export const getProducts = async (limit?: number) => {
+  const res = await api.get<Product[]>('/products', { params: { limit } });
   return res.data;
 };
 
@@ -31,4 +32,3 @@ export const deleteProduct = async (id: number) => {
   const res = await api.delete(`/products/${id}`);
   return res.data;
 };
-

@@ -17,6 +17,7 @@ import type { Product } from '../services/productService';
 import { deleteProduct } from '../services/productService';
 import { useState } from 'react';
 import { useToast } from '../components/ui/ToastProvider';
+import getImagePath from '../utils/helpers';
 
 function formatMoney(value: number | string) {
   const n = Number(value ?? 0);
@@ -277,10 +278,10 @@ const StockPage = () => {
                       key={product.id ?? product.name}
                       className='flex h-full flex-col rounded-2xl border border-slate-100 bg-slate-50/80 shadow-sm'
                     >
-                      <div className='relative h-32 w-full overflow-hidden rounded-t-2xl bg-gradient-to-br from-slate-200 via-slate-100 to-slate-50'>
+                      <div className='relative h-40 w-full overflow-hidden rounded-t-2xl bg-gradient-to-br from-slate-200 via-slate-100 to-slate-50'>
                         {product.image ? (
                           <img
-                            src={product.image}
+                            src={getImagePath(product.image)}
                             alt={product.name}
                             className='h-full w-full object-cover'
                           />
@@ -318,15 +319,15 @@ const StockPage = () => {
                               isOut
                                 ? 'bg-rose-50 text-rose-600'
                                 : isLow
-                                ? 'bg-amber-50 text-amber-700'
-                                : 'bg-emerald-50 text-emerald-700'
+                                  ? 'bg-amber-50 text-amber-700'
+                                  : 'bg-emerald-50 text-emerald-700'
                             }`}
                           >
                             {isOut
                               ? 'À commander'
                               : isLow
-                              ? 'Prévoir réassort'
-                              : 'OK'}
+                                ? 'Prévoir réassort'
+                                : 'OK'}
                           </span>
                         </div>
                       </div>

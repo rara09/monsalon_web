@@ -15,8 +15,9 @@ type ProductFormData = {
   costPrice: number | '';
   sellingPrice: number | '';
   stockLevel: number | '';
-  lowStockAlert: number | '';
+  lowStockThreshold: number | '';
   imageFile: File | null;
+  imageDataUrl: string;
 };
 
 type ProductFormModalMode = 'create' | 'edit';
@@ -36,6 +37,14 @@ const ProductFormModal = ({
 }) => {
   const { toast, toastError } = useToast();
 
+  const fileToDataUrl = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result ?? ''));
+      reader.onerror = () => reject(new Error('Impossible de lire le fichier image'));
+      reader.readAsDataURL(file);
+    });
+
   const initialForm = useMemo<ProductFormData>(
     () => ({
       name: product?.name ?? '',
@@ -44,15 +53,15 @@ const ProductFormModal = ({
       costPrice: product?.costPrice ?? '',
       sellingPrice: product?.sellingPrice ?? '',
       stockLevel: product?.stockLevel ?? '',
-      lowStockAlert: product?.lowStockAlert ?? 3,
+      lowStockThreshold: product?.lowStockThreshold ?? 3,
       imageFile: null,
+      imageDataUrl: '',
     }),
     [
       product?.category,
       product?.costPrice,
       product?.description,
-      product?.image,
-      product?.lowStockAlert,
+      product?.lowStockThreshold,
       product?.name,
       product?.sellingPrice,
       product?.stockLevel,
@@ -68,7 +77,9 @@ const ProductFormModal = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >,
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({
@@ -77,7 +88,7 @@ const ProductFormModal = ({
         name === 'costPrice' ||
         name === 'sellingPrice' ||
         name === 'stockLevel' ||
-        name === 'lowStockAlert'
+        name === 'lowStockThreshold'
           ? value === ''
             ? ''
             : Number(value)
@@ -87,15 +98,29 @@ const ProductFormModal = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
-    setForm((prev) => ({ ...prev, imageFile: file }));
+    setForm((prev) => ({ ...prev, imageFile: file, imageDataUrl: '' }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
-
     setIsSubmitting(true);
     try {
+      let image: string | null | undefined = product?.image ?? undefined;
+
+      if (form.imageFile) {
+        // Backend expects a string. We store the image as a Data URL (base64).
+        // Keep it reasonably small to avoid huge JSON payloads.
+        const maxBytes = 2_000_000; // ~2MB
+        if (form.imageFile.size > maxBytes) {
+          throw new Error(
+            "Image trop lourde (max 2MB). Merci de choisir une image plus légère.",
+          );
+        }
+        const dataUrl = await fileToDataUrl(form.imageFile);
+        image = dataUrl || undefined;
+      }
+
       const payload: Product = {
         category: form.category,
         name: form.name,
@@ -104,12 +129,14 @@ const ProductFormModal = ({
         sellingPrice:
           typeof form.sellingPrice === 'number' ? form.sellingPrice : 0,
         stockLevel: typeof form.stockLevel === 'number' ? form.stockLevel : 0,
-        lowStockAlert:
-          typeof form.lowStockAlert === 'number'
-            ? form.lowStockAlert
+        lowStockThreshold:
+          typeof form.lowStockThreshold === 'number'
+            ? form.lowStockThreshold
             : undefined,
-        image: form.imageFile?.name ?? product?.image ?? undefined,
+        image,
       };
+
+      console.log(payload);
 
       if (mode === 'edit') {
         if (!product?.id)
@@ -180,7 +207,7 @@ const ProductFormModal = ({
                 <input
                   type='number'
                   min={0}
-                  step={100}
+                  step={5}
                   name='sellingPrice'
                   value={form.sellingPrice}
                   onChange={handleChange}
@@ -203,7 +230,7 @@ const ProductFormModal = ({
               <input
                 type='number'
                 min={0}
-                step={100}
+                step={5}
                 name='costPrice'
                 value={form.costPrice}
                 onChange={handleChange}
@@ -255,8 +282,8 @@ const ProductFormModal = ({
                 type='number'
                 min={0}
                 step={1}
-                name='lowStockAlert'
-                value={form.lowStockAlert}
+                name='lowStockThreshold'
+                value={form.lowStockThreshold}
                 onChange={handleChange}
                 className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
                 placeholder='5'
@@ -275,6 +302,11 @@ const ProductFormModal = ({
               {form.imageFile && (
                 <p className='pt-1 text-[11px] text-slate-500'>
                   Fichier sélectionné : {form.imageFile.name}
+                </p>
+              )}
+              {!form.imageFile && product?.image && (
+                <p className='pt-1 text-[11px] text-slate-500'>
+                  Image actuelle conservée.
                 </p>
               )}
             </div>
