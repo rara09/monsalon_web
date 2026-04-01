@@ -6,8 +6,11 @@ import AppointmentsPage from '../pages/AppointmentsPage';
 import ServicesPage from '../pages/ServicesPage';
 import SalesPage from '../pages/SalesPage';
 import StockPage from '../pages/StockPage';
+import CatalogPage from '../pages/CatalogPage';
 import ExpensesPage from '../pages/ExpensesPage';
 import DebtsPage from '../pages/DebtsPage';
+import NotificationsPage from '../pages/NotificationsPage';
+import UsersPage from '../pages/UsersPage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import ProfilePage from '../pages/ProfilePage';
@@ -35,6 +38,10 @@ export const router = createBrowserRouter([
         element: <ServicesPage />,
       },
       {
+        path: 'catalog',
+        element: <CatalogPage />,
+      },
+      {
         path: 'sales',
         element: <SalesPage />,
       },
@@ -49,6 +56,14 @@ export const router = createBrowserRouter([
       {
         path: 'debts',
         element: <DebtsPage />,
+      },
+      {
+        path: 'notifications',
+        element: <NotificationsPage />,
+      },
+      {
+        path: 'users',
+        element: <UsersPage />,
       },
       {
         path: 'profile',

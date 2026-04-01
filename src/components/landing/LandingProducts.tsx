@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useProducts } from '../../hooks/useProducts';
 import getImagePath, { formatPrice } from '../../utils/helpers';
-import { div } from 'framer-motion/client';
 import { motion } from 'framer-motion';
 
 // const products = [
@@ -11,54 +10,58 @@ import { motion } from 'framer-motion';
 //   { name: 'Crème Visage', price: 2200, note: 'Peaux sensibles' },
 // ];
 
+const MAX_LANDING_PRODUCTS = 8;
+
 const LandingProducts = () => {
   const { products, loading } = useProducts();
+  const visibleProducts = products.slice(0, MAX_LANDING_PRODUCTS);
+
   return (
-    <section id='produits' className='bg-slate-50'>
+    <section id='produits' className='bg-transparent'>
       <div className='mx-auto max-w-6xl px-4 py-14'>
         <div className='mb-8'>
           <div className='flex justify-between'>
-            <div className='text-xs font-semibold uppercase tracking-wide text-rose-600'>
-              nos produits
+            <div className='text-xs font-semibold uppercase tracking-wide text-rose-300'>
+              Produits
             </div>
             <a
               href='/auth/login'
-              className='text-rose-500 font-semibold hover:underline text-sm'
+              className='text-rose-300 font-semibold hover:underline text-sm'
             >
               Voir tout
             </a>
           </div>
-          <h2 className='mt-2 text-2xl font-semibold tracking-tight'>
-            Les essentiels du salon
+          <h2 className='mt-2 text-2xl font-semibold tracking-tight text-white'>
+            Les essentiels recommandés par MG BEAUTY
           </h2>
         </div>
 
         <div className='grid gap-4 md:grid-cols-4'>
           {loading ? (
-            <div className='col-span-4 text-center text-slate-500'>
+            <div className='col-span-4 text-center text-white/60'>
               Chargement...
             </div>
           ) : (
-            products.map((prod) => (
+            visibleProducts.map((prod) => (
               <div
-                key={prod.name}
-                className='rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200'
+                key={prod.id ?? prod.name}
+                className='rounded-3xl bg-white/5 p-5 shadow-sm ring-1 ring-white/10 backdrop-blur'
               >
                 <div className='h-54 rounded-2xl bg-linear-to-br from-rose-200 via-orange-200 to-yellow-100'>
                   <motion.img
                     src={getImagePath(prod.image || '')}
                     alt={prod.name}
                     className='h-full w-full object-cover object-top p-3'
-                    whileHover={{ scale: 1.1 }}
+                    whileHover={{ scale: 1.15 }}
                     transition={{ duration: 0.3 }}
                   />
                 </div>
                 <div className='mt-4 space-y-1 text-center'>
-                  <div className='text-sm font-semibold'>{prod.name}</div>
-                  <div className='text-[11px] text-slate-500'>
+                  <div className='text-sm font-semibold text-white'>{prod.name}</div>
+                  <div className='text-[11px] text-white/60'>
                     {prod.description}
                   </div>
-                  <div className='text-sm font-semibold text-rose-500'>
+                  <div className='text-sm font-semibold text-rose-300'>
                     {formatPrice(prod.sellingPrice)}
                   </div>
                 </div>
@@ -72,9 +75,10 @@ const LandingProducts = () => {
         </div>
 
         <div className='mt-10 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
-          <p className='text-sm text-slate-600'>
-            Vous souhaitez un conseil produit ? Réservez votre rendez-vous et
-            repartez avec une recommandation adaptée.
+          <p className='text-sm text-white/70'>
+            Besoin d’un avis sur vos soins capillaires ou votre routine beauté ?
+            Prenez rendez-vous : nous vous orientons vers les produits qui vous
+            conviennent.
           </p>
           <Link to='/auth/login'>
             <span className='inline-flex w-fit items-center justify-center rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-rose-600'>

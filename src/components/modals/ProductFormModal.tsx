@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react';
 import BaseModal from './BaseModal';
 import Button from '../ui/Button';
 import {
-  addProduct,
-  updateProduct,
+  addProductFormData,
+  updateProductFormData,
   type Product,
 } from '../../services/productService';
 import { useToast } from '../ui/ToastProvider';
@@ -17,7 +17,6 @@ type ProductFormData = {
   stockLevel: number | '';
   lowStockThreshold: number | '';
   imageFile: File | null;
-  imageDataUrl: string;
 };
 
 type ProductFormModalMode = 'create' | 'edit';
@@ -37,14 +36,6 @@ const ProductFormModal = ({
 }) => {
   const { toast, toastError } = useToast();
 
-  const fileToDataUrl = (file: File) =>
-    new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(String(reader.result ?? ''));
-      reader.onerror = () => reject(new Error('Impossible de lire le fichier image'));
-      reader.readAsDataURL(file);
-    });
-
   const initialForm = useMemo<ProductFormData>(
     () => ({
       name: product?.name ?? '',
@@ -55,7 +46,6 @@ const ProductFormModal = ({
       stockLevel: product?.stockLevel ?? '',
       lowStockThreshold: product?.lowStockThreshold ?? 3,
       imageFile: null,
-      imageDataUrl: '',
     }),
     [
       product?.category,
@@ -98,7 +88,7 @@ const ProductFormModal = ({
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] ?? null;
-    setForm((prev) => ({ ...prev, imageFile: file, imageDataUrl: '' }));
+    setForm((prev) => ({ ...prev, imageFile: file }));
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -106,45 +96,47 @@ const ProductFormModal = ({
     if (isSubmitting) return;
     setIsSubmitting(true);
     try {
-      let image: string | null | undefined = product?.image ?? undefined;
-
       if (form.imageFile) {
-        // Backend expects a string. We store the image as a Data URL (base64).
-        // Keep it reasonably small to avoid huge JSON payloads.
-        const maxBytes = 2_000_000; // ~2MB
+        const maxBytes = 5_000_000; // ~5MB (multer côté serveur)
         if (form.imageFile.size > maxBytes) {
           throw new Error(
-            "Image trop lourde (max 2MB). Merci de choisir une image plus légère.",
+            'Image trop lourde (max 5MB). Merci de choisir une image plus légère.',
           );
         }
-        const dataUrl = await fileToDataUrl(form.imageFile);
-        image = dataUrl || undefined;
       }
 
-      const payload: Product = {
-        category: form.category,
-        name: form.name,
-        description: form.description || undefined,
-        costPrice: typeof form.costPrice === 'number' ? form.costPrice : 0,
-        sellingPrice:
-          typeof form.sellingPrice === 'number' ? form.sellingPrice : 0,
-        stockLevel: typeof form.stockLevel === 'number' ? form.stockLevel : 0,
-        lowStockThreshold:
-          typeof form.lowStockThreshold === 'number'
-            ? form.lowStockThreshold
-            : undefined,
-        image,
-      };
-
-      console.log(payload);
+      const formData = new FormData();
+      formData.append('name', form.name);
+      formData.append('category', form.category);
+      formData.append(
+        'costPrice',
+        String(typeof form.costPrice === 'number' ? form.costPrice : 0),
+      );
+      formData.append(
+        'sellingPrice',
+        String(typeof form.sellingPrice === 'number' ? form.sellingPrice : 0),
+      );
+      formData.append(
+        'stockLevel',
+        String(typeof form.stockLevel === 'number' ? form.stockLevel : 0),
+      );
+      if (form.description.trim()) {
+        formData.append('description', form.description.trim());
+      }
+      if (typeof form.lowStockThreshold === 'number') {
+        formData.append('lowStockThreshold', String(form.lowStockThreshold));
+      }
+      if (form.imageFile) {
+        formData.append('image', form.imageFile);
+      }
 
       if (mode === 'edit') {
         if (!product?.id)
           throw new Error('Product id manquant pour la mise à jour');
-        await updateProduct(product.id, payload);
+        await updateProductFormData(product.id, formData);
         toast('success', 'Produit mis à jour avec succès.');
       } else {
-        await addProduct(payload);
+        await addProductFormData(formData);
         toast('success', 'Produit ajouté avec succès.');
       }
 
@@ -166,20 +158,6 @@ const ProductFormModal = ({
     >
       <div>
         <form onSubmit={handleSubmit} className='space-y-4' method='POST'>
-          <div className='space-y-1.5'>
-            <label className='text-xs font-medium text-slate-700'>
-              Nom du produit
-            </label>
-            <input
-              name='name'
-              value={form.name}
-              onChange={handleChange}
-              className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
-              placeholder='InstaSnap Mini Retro'
-              required
-            />
-          </div>
-
           <div className='grid gap-4 sm:grid-cols-2'>
             <div className='space-y-1.5'>
               <label className='text-xs font-medium text-slate-700'>
@@ -197,6 +175,19 @@ const ProductFormModal = ({
                 <option value='Aesthetics'>Esthétique</option>
                 <option value='Other'>Autres</option>
               </select>
+            </div>
+            <div className='space-y-1.5'>
+              <label className='text-xs font-medium text-slate-700'>
+                Nom du produit
+              </label>
+              <input
+                name='name'
+                value={form.name}
+                onChange={handleChange}
+                className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
+                placeholder='InstaSnap Mini Retro'
+                required
+              />
             </div>
 
             <div className='space-y-1.5'>
@@ -220,26 +211,25 @@ const ProductFormModal = ({
                 </span>
               </div>
             </div>
-          </div>
-
-          <div className='space-y-1.5'>
-            <label className='text-xs font-medium text-slate-700'>
-              Prix d&apos;achat
-            </label>
-            <div className='relative'>
-              <input
-                type='number'
-                min={0}
-                step={5}
-                name='costPrice'
-                value={form.costPrice}
-                onChange={handleChange}
-                className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 pr-10 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
-                placeholder='6000'
-              />
-              <span className='pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-slate-400'>
-                F
-              </span>
+            <div className='space-y-1.5'>
+              <label className='text-xs font-medium text-slate-700'>
+                Prix d&apos;achat
+              </label>
+              <div className='relative'>
+                <input
+                  type='number'
+                  min={0}
+                  step={5}
+                  name='costPrice'
+                  value={form.costPrice}
+                  onChange={handleChange}
+                  className='w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 pr-10 text-sm outline-none ring-rose-100 focus:bg-white focus:ring'
+                  placeholder='6000'
+                />
+                <span className='pointer-events-none absolute inset-y-0 right-3 flex items-center text-xs text-slate-400'>
+                  F
+                </span>
+              </div>
             </div>
           </div>
 

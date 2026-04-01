@@ -1,5 +1,7 @@
 export { default as AppHeader } from './AppHeader';
 export { default as Footer } from './Footer';
+export { default as AppSidebar } from './layout/AppSidebar';
+export { default as AppTopbar } from './layout/AppTopbar';
 
 // ui
 export { default as NavItem } from './ui/NavItem';
@@ -18,6 +20,8 @@ export { default as ToastProvider, useToast } from './ui/ToastProvider';
 export { default as BaseModal } from './modals/BaseModal';
 export { default as ClientFormModal } from './modals/ClientFormModal';
 export { default as ProductFormModal } from './modals/ProductFormModal';
+export { default as CatalogServiceFormModal } from './modals/CatalogServiceFormModal';
+export { default as UserFormModal } from './modals/UserFormModal';
 export { default as SaleFormModal } from './modals/SaleFormModal';
 export { default as DebtFormModal } from './modals/DebtFormModal';
 export { default as ExpenseFormModal } from './modals/ExpenseFormModal';

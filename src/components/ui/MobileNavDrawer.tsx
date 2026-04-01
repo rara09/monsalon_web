@@ -3,6 +3,8 @@ import { Fragment } from 'react';
 import {
   X,
   LayoutDashboard,
+  Bell,
+  UserCog,
   Scissors,
   ShoppingBag,
   Users,
@@ -10,6 +12,7 @@ import {
   Wallet,
   Receipt,
   CalendarClock,
+  ClipboardList,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
@@ -20,7 +23,10 @@ type MobileNavDrawerProps = {
 
 const links = [
   { to: '/dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
+  { to: '/notifications', label: 'Notifications', icon: Bell },
+  { to: '/users', label: 'Utilisateurs', icon: UserCog },
   { to: '/services', label: 'Prestations', icon: Scissors },
+  { to: '/catalog', label: 'Catalogue', icon: ClipboardList },
   { to: '/sales', label: 'Ventes', icon: ShoppingBag },
   { to: '/clients', label: 'Clients', icon: Users },
   { to: '/appointments', label: 'Rendez-vous', icon: CalendarClock },

@@ -11,8 +11,8 @@ import { useForm } from 'react-hook-form';
 import { Eye, EyeOff } from 'lucide-react';
 
 const defaultValues: LoginData = {
-  email: 'raoulgbadou2@gmail.com',
-  password: '12345678',
+  email: '',
+  password: '',
 };
 
 export default function LoginPage() {

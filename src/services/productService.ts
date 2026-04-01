@@ -23,8 +23,38 @@ export const addProduct = async (product: Product) => {
   return res.data;
 };
 
+/** POST multipart (champ fichier `image`) — requis par le backend Nest + multer */
+export const addProductFormData = async (formData: FormData) => {
+  const res = await api.post<Product>('/products', formData, {
+    transformRequest: [
+      (data, headers) => {
+        if (data instanceof FormData) {
+          delete headers['Content-Type'];
+        }
+        return data;
+      },
+    ],
+  });
+  return res.data;
+};
+
 export const updateProduct = async (id: number, product: Product) => {
   const res = await api.patch<Product>(`/products/${id}`, product);
+  return res.data;
+};
+
+/** PATCH multipart (champ fichier `image`, optionnel) */
+export const updateProductFormData = async (id: number, formData: FormData) => {
+  const res = await api.patch<Product>(`/products/${id}`, formData, {
+    transformRequest: [
+      (data, headers) => {
+        if (data instanceof FormData) {
+          delete headers['Content-Type'];
+        }
+        return data;
+      },
+    ],
+  });
   return res.data;
 };
 

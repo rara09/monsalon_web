@@ -1,107 +1,238 @@
 import { Link } from 'react-router-dom';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const LandingHero = () => {
+  const slides = useMemo(
+    () => [
+      {
+        id: 's1',
+        image: '/img/about_us/esthetic_1.jpg',
+        eyebrow: 'Institut de beauté',
+        title: 'MG BEAUTY — votre beauté, notre passion.',
+        subtitle:
+          'Coiffure et tresses, soins du visage, manucure, pédicure, maquillage professionnel et épilation. Un lieu d’exception à Abomey-Calavi.',
+        ctaLabel: 'Nous découvrir',
+        ctaHref: '#experience',
+      },
+      {
+        id: 's2',
+        image: '/img/slides/slider2.jpg',
+        eyebrow: 'Prestations',
+        title: 'Des soins complets, des rendez-vous simples.',
+        subtitle:
+          'Parcourez notre catalogue : tarifs clairs, durées affichées, réservation en ligne en quelques clics.',
+        ctaLabel: 'Voir les prestations',
+        ctaHref: '#prestations',
+      },
+      {
+        id: 's3',
+        image: '/img/slides/slider3.jpg',
+        eyebrow: 'Boutique',
+        title: 'Prolongez l’effet salon à la maison.',
+        subtitle:
+          'Les produits que nous utilisons et recommandons pour entretenir votre style entre deux visites.',
+        ctaLabel: 'Voir les produits',
+        ctaHref: '#produits',
+      },
+    ],
+    [],
+  );
+
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+
+  const active = slides[index] ?? slides[0];
+
+  useEffect(() => {
+    if (paused) return;
+    const t = window.setInterval(() => {
+      setIndex((i) => (i + 1) % slides.length);
+    }, 6500);
+    return () => window.clearInterval(t);
+  }, [paused, slides.length]);
+
+  function prev() {
+    setIndex((i) => (i - 1 + slides.length) % slides.length);
+  }
+  function next() {
+    setIndex((i) => (i + 1) % slides.length);
+  }
+
   return (
-    <section className='relative overflow-hidden'>
-      <div
-        className='absolute inset-0'
-        // style={{
-        //   background:
-        //     'radial-gradient(1200px circle at 70% 15%, rgba(236,72,153,0.22), transparent 55%), radial-gradient(900px circle at 20% 30%, rgba(124,58,237,0.16), transparent 52%), linear-gradient(180deg, #0f172a 0%, #0b1224 45%, #ffffff 100%)',
-        // }}
-        // style={{
-        //   background: 'linear-gradient(180deg, #0f172a 0%, #0b1224 45%, #ffffff 100%), url(/img/makeup_woman.jpg)',
-        //   backgroundSize: 'cover',
-        //   backgroundPosition: 'right',
-        //   backgroundAttachment: 'fixed',
-        // }}
-        style={{
-          background: `
-    linear-gradient(180deg, rgba(15,23,42,0.8) 0%, rgba(11,18,36,0.6) 45%, rgba(255,255,255,0.3) 100%),
-    url(/img/makeup_woman.jpg)
-  `,
-          backgroundSize: 'cover',
-          backgroundPosition: 'right',
-          backgroundAttachment: 'fixed',
-        }}
-      />
-      <div className='absolute -left-24 top-0 h-140 w-140 rounded-full bg-rose-500/30 blur-3xl' />
+    <section
+      className='relative h-screen overflow-hidden'
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {/* Background slider */}
+      <div className='absolute inset-0'>
+        <AnimatePresence mode='wait'>
+          <motion.div
+            key={active.id}
+            className='absolute inset-0'
+            initial={{ opacity: 0.5, scale: 1.03 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0.5, scale: 1.01 }}
+            transition={{ duration: 0.8, ease: 'easeOut' }}
+            style={{
+              backgroundImage: `url(${active.image})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          />
+        </AnimatePresence>
 
-      <div className='relative mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 px-4 py-16 md:grid-cols-2 md:py-20'>
-        <div className='space-y-5'>
-          <div className='inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold text-white ring-1 ring-white/15'>
-            <span className='inline-flex h-2 w-2 rounded-full bg-rose-300' />
-            Salon de coiffure et d'esthetique
-          </div>
+        {/* Dark overlay to make white text pop */}
+        <div className='absolute inset-0 bg-black/55' />
 
-          <h1 className='text-4xl font-semibold tracking-tight text-white md:text-5xl'>
-            Révélez votre beauté naturelle
-          </h1>
+        {/* Subtle vignette */}
+        <div className='absolute inset-0 bg-radial-[ellipse_at_center] from-white/0 via-black/0 to-black/40' />
+      </div>
 
-          <p className='max-w-xl text-sm leading-relaxed text-white/75 md:text-base'>
-            Un studio pensé pour sublimer vos cheveux et votre peau, avec des
-            prestations personnalisées et un suivi soigné.
-          </p>
+      <div className='absolute z-50 w-full top-1/2 transform -translate-y-1/2 flex items-center gap-2'>
+        <button
+          type='button'
+          onClick={prev}
+          className='inline-flex absolute left-0 items-center justify-center rounded-full text-white transition cursor-pointer'
+          aria-label='Slide précédent'
+        >
+          <ChevronLeft strokeWidth={0.25} className='w-20 h-20' />
+        </button>
+        <button
+          type='button'
+          onClick={next}
+          className='inline-flex absolute right-0 z-50 items-center justify-center rounded-full text-white transition cursor-pointer'
+          aria-label='Slide suivant'
+        >
+          <ChevronRight strokeWidth={0.25} className='h-20 w-20' />
+        </button>
+      </div>
 
-          <div className='flex flex-wrap gap-2'>
-            <Link to='/auth/login'>
-              <span className='inline-flex items-center justify-center rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-rose-600'>
-                Prendre rendez-vous
-              </span>
-            </Link>
-            <a
-              href='#prestations'
-              className='rounded-full border border-white/25 bg-white/5 px-5 py-2 text-sm font-semibold text-white/90 hover:bg-white/10'
-            >
-              Découvrir nos prestations
-            </a>
-          </div>
-
-          <div className='mt-4 grid grid-cols-2 gap-3 text-white/80 sm:grid-cols-4'>
-            {[
-              { k: '5+ ans', v: 'expérience' },
-              { k: '100%', v: 'conseil sur mesure' },
-              { k: '08:00-20:00', v: 'horaires studio' },
-              { k: 'Pro', v: 'produits de qualités' },
-            ].map((m) => (
-              <div
-                key={m.k}
-                className='rounded-2xl bg-white/5 px-3 py-3 ring-1 ring-white/10'
+      {/* Content */}
+      <div className='relative h-full flex flex-col justify-center mx-auto max-w-6xl px-4 pb-16 pt-28 md:pb-24 md:pt-36'>
+        <div className='flex justify-center items-center gap-10 md:grid-cols-12'>
+          <div className='md:col-span-8 max-w-2xl text-center'>
+            <AnimatePresence mode='wait'>
+              <motion.div
+                key={`${active.id}-text`}
+                initial='hidden'
+                animate='show'
+                exit='hidden'
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  show: {
+                    opacity: 1,
+                    y: 0,
+                    transition: {
+                      duration: 0.55,
+                      ease: 'easeOut',
+                      staggerChildren: 0.08,
+                    },
+                  },
+                }}
+                className='space-y-5'
               >
-                <div className='text-sm font-semibold text-white'>{m.k}</div>
-                <div className='text-[11px]'>{m.v}</div>
-              </div>
-            ))}
+                {/* <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 10 },
+                    show: { opacity: 1, y: 0 },
+                  }}
+                  className='inline-flex justify-center items-center gap-2 rounded-full bg-black/35 px-4 py-2 text-xs font-semibold text-white ring-1 ring-white/15 backdrop-blur'
+                >
+                  <span className='inline-flex h-2 w-2 rounded-full bg-rose-400' />
+                  {active.eyebrow}
+                </motion.div> */}
+
+                <motion.h1
+                  variants={{
+                    hidden: { opacity: 0, y: 12 },
+                    show: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        duration: 0.8,
+                        ease: 'easeOut',
+                      },
+                    },
+                  }}
+                  className='text-4xl text-center font-semibold tracking-tight text-white md:text-6xl'
+                >
+                  {active.title}
+                </motion.h1>
+
+                <motion.p
+                  variants={{
+                    hidden: { opacity: 0, y: 25 },
+                    show: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        delay: 0.5,
+                        duration: 0.8,
+                        ease: 'easeOut',
+                      },
+                    },
+                  }}
+                  className='max-w-2xl text-center text-sm leading-relaxed text-white/80 md:text-base'
+                >
+                  {active.subtitle}
+                </motion.p>
+
+                <motion.div
+                  variants={{
+                    hidden: { opacity: 0, y: 12 },
+                    show: {
+                      opacity: 1,
+                      y: 0,
+                      transition: {
+                        delay: 0.8,
+                        duration: 0.8,
+                      },
+                    },
+                  }}
+                  className='flex flex-wrap justify-center items-center gap-2 mt-5'
+                >
+                  <a
+                    href={active.ctaHref}
+                    className='inline-flex items-center justify-center rounded-sm bg-rose-500 px-7 py-3 text-sm font-semibold text-white shadow-sm hover:bg-rose-600'
+                  >
+                    {active.ctaLabel}
+                  </a>
+                  <Link
+                    to='/auth/login'
+                    className='inline-flex items-center justify-center rounded-sm border border-white/20 bg-white/5 px-7 py-3 text-sm font-semibold text-white hover:bg-white/10'
+                  >
+                    Prendre RDV
+                  </Link>
+                </motion.div>
+              </motion.div>
+            </AnimatePresence>
           </div>
-        </div>
 
-        {/* <div className='hidden md:block relative'>
-          <div className='aspect-4/3 w-full overflow-hidden rounded-3xl bg-linear-to-br from-rose-600 via-fuchsia-600 to-indigo-700 ring-1 ring-white/10 shadow-sm'>
-            <div className='h-full w-full bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.28),transparent_40%),radial-gradient(circle_at_70%_55%,rgba(0,0,0,0.25),transparent_40%)]' />
-            <img
-              className='h-full w-full object-cover object-top'
-              src='/img/makeup_woman.jpg'
-            />
-          </div>
-
-          <div className='pointer-events-none absolute -bottom-6 -right-6 h-40 w-40 rounded-full bg-white/10 blur-2xl' />
-
-          <div className='absolute left-4 top-4 rounded-2xl bg-white/10 p-3 text-white ring-1 ring-white/15'>
-            <div className='flex items-center gap-2'>
-              <span className='inline-flex h-7 w-7 items-center justify-center rounded-full bg-rose-500/70'>
-                ✂
-              </span>
-              <div>
-                <div className='text-xs font-semibold'>
-                  {import.meta.env.VITE_APP_NAME}
-                </div>
-                <div className='text-[11px] text-white/70'>
-                  Coiffure & esthétique
-                </div>
+          {/* Right controls / dots */}
+          {/* <div className='md:col-span-4 md:justify-self-end'>
+            <div className='flex items-center justify-between gap-3 md:flex-col md:items-end md:justify-start'>
+              <div className='flex items-center gap-2 md:mt-6'>
+                {slides.map((s, i) => (
+                  <button
+                    key={s.id}
+                    type='button'
+                    onClick={() => setIndex(i)}
+                    aria-label={`Aller au slide ${i + 1}`}
+                    className={[
+                      'h-2.5 w-2.5 rounded-full ring-1 ring-white/25 transition-all',
+                      i === index
+                        ? 'bg-rose-500 scale-110'
+                        : 'bg-white/35 hover:bg-white/55',
+                    ].join(' ')}
+                  />
+                ))}
               </div>
             </div>
-          </div>
-        </div> */}
+          </div> */}
+        </div>
       </div>
     </section>
   );

@@ -4,21 +4,21 @@ const testimonials = [
     role: 'Cliente fidèle',
     rating: 5,
     quote:
-      'Accueil chaleureux, résultat impeccable. Et en plus on ressort avec le sourire.',
+      'Accueil au top, tresses nickel et ambiance vraiment agréable. Je recommande MG BEAUTY.',
   },
   {
     name: 'Sarah D.',
     role: 'Première visite',
     rating: 5,
     quote:
-      'J’ai adoré le diagnostic rapide et les conseils. Tout est clair, simple et pro.',
+      'Soin du visage et manucure : tout était expliqué, je suis repartie détendue et ravie.',
   },
   {
     name: 'Nadine M.',
-    role: 'Coloration',
+    role: 'Maquillage & coiffure',
     rating: 5,
     quote:
-      'Couleur parfaitement réussie, timing respecté. Studio au top, ambiance légère.',
+      'Pour un événement, le maquillage et la coiffure étaient parfaits. Équipe professionnelle.',
   },
 ];
 
@@ -47,16 +47,16 @@ export default function LandingTestimonials() {
       <div className='mx-auto max-w-6xl px-4 py-14'>
         <div className='flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between'>
           <div>
-            <div className='text-xs font-semibold uppercase tracking-wide text-rose-600'>
+            <div className='text-xs font-semibold uppercase tracking-wide text-rose-300'>
               Témoignages
             </div>
-            <h2 className='mt-2 text-2xl font-semibold tracking-tight text-slate-900'>
-              Elles sont venues… elles ont aimé.
+            <h2 className='mt-2 text-2xl font-semibold tracking-tight text-white'>
+              Elles nous font confiance
             </h2>
           </div>
-          <p className='max-w-md text-sm text-slate-600'>
-            Une ambiance joyeuse, des résultats nets, et des rendez-vous qui se
-            passent sans stress.
+          <p className='max-w-md text-sm text-white/70'>
+            Des retours sur nos prestations coiffure, soins, ongles et maquillage
+            à Abomey-Calavi.
           </p>
         </div>
 
@@ -64,42 +64,42 @@ export default function LandingTestimonials() {
           {testimonials.map((t) => (
             <figure
               key={t.name}
-              className='rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-200'
+              className='rounded-3xl bg-white/5 p-5 shadow-sm ring-1 ring-white/10 backdrop-blur'
             >
               <div className='flex items-start justify-between gap-3'>
                 <div className='min-w-0'>
-                  <figcaption className='text-sm font-semibold text-slate-900'>
+                  <figcaption className='text-sm font-semibold text-white'>
                     {t.name}
                   </figcaption>
-                  <div className='text-[11px] font-medium text-slate-500'>
+                  <div className='text-[11px] font-medium text-white/60'>
                     {t.role}
                   </div>
                 </div>
                 <Stars count={t.rating} />
               </div>
 
-              <blockquote className='mt-4 text-sm leading-relaxed text-slate-700'>
+              <blockquote className='mt-4 text-sm leading-relaxed text-white/80'>
                 “{t.quote}”
               </blockquote>
 
               <div className='mt-5 flex items-center justify-between'>
-                <span className='inline-flex items-center gap-2 rounded-full bg-rose-50 px-3 py-1 text-[11px] font-semibold text-rose-600 ring-1 ring-rose-100'>
+                <span className='inline-flex items-center gap-2 rounded-full bg-rose-500/15 px-3 py-1 text-[11px] font-semibold text-rose-200 ring-1 ring-rose-400/20'>
                   <span className='h-2 w-2 rounded-full bg-rose-500' />
                   Avis vérifié
                 </span>
-                <span className='text-[11px] text-slate-400'>Merci</span>
+                <span className='text-[11px] text-white/40'>Merci</span>
               </div>
             </figure>
           ))}
         </div>
 
-        <div className='mt-10 rounded-3xl bg-slate-50 p-6 ring-1 ring-slate-200'>
+        <div className='mt-10 rounded-3xl bg-white/5 p-6 ring-1 ring-white/10 backdrop-blur'>
           <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
             <div className='space-y-1'>
-              <div className='text-sm font-semibold text-slate-900'>
+              <div className='text-sm font-semibold text-white'>
                 Vous avez aimé votre passage ?
               </div>
-              <div className='text-sm text-slate-600'>
+              <div className='text-sm text-white/70'>
                 Laissez un petit mot, ça nous booste (et ça fait plaisir).
               </div>
             </div>

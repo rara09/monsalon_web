@@ -12,11 +12,11 @@ const AppLogo = () => {
           />
           {/* ✂ */}
         </div>
-        <div className='flex flex-col'>
-          <span className='text-3xl font-semibold tracking-tight'>Belya</span>
-          {/* <span className='text-xs text-slate-500'>
-              Système de gestion salon
-            </span> */}
+        <div className='flex flex-col leading-none'>
+          <span className='text-2xl font-bold tracking-tight'>MG</span>
+          <span className='mt-0.5 text-[11px] font-semibold tracking-[0.35em]'>
+            BEAUTY
+          </span>
         </div>
       </div>
     </NavLink>
