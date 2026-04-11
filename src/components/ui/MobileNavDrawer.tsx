@@ -13,6 +13,7 @@ import {
   Receipt,
   CalendarClock,
   ClipboardList,
+  Images,
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 
@@ -27,6 +28,7 @@ const links = [
   { to: '/users', label: 'Utilisateurs', icon: UserCog },
   { to: '/services', label: 'Prestations', icon: Scissors },
   { to: '/catalog', label: 'Catalogue', icon: ClipboardList },
+  { to: '/gallery', label: 'Galerie', icon: Images },
   { to: '/sales', label: 'Ventes', icon: ShoppingBag },
   { to: '/clients', label: 'Clients', icon: Users },
   { to: '/appointments', label: 'Rendez-vous', icon: CalendarClock },

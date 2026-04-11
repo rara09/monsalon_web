@@ -2,8 +2,10 @@ import {
   AboutUs,
   LandingContact,
   LandingFooter,
+  LandingGallery,
   LandingHeader,
   LandingHero,
+  LandingInstituteServices,
   LandingProducts,
   LandingServices,
   LandingTestimonials,
@@ -33,6 +35,15 @@ export default function LandingPage() {
         <AboutUs />
       </motion.div>
 
+      <motion.div
+        initial={{ opacity: 0, y: 32 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.25 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+      >
+        <LandingInstituteServices />
+      </motion.div>
+
       {/* Prestations */}
       <motion.div
         initial={{ opacity: 0, y: 32 }}
@@ -60,6 +71,15 @@ export default function LandingPage() {
         transition={{ duration: 0.6, ease: 'easeOut', delay: 0.05 }}
       >
         <LandingTestimonials />
+      </motion.div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 32 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.25 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+      >
+        <LandingGallery />
       </motion.div>
 
       <motion.div

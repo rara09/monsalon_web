@@ -25,7 +25,7 @@ const LandingProducts = () => {
               Produits
             </div>
             <a
-              href='/auth/login'
+              href='/produits'
               className='text-rose-300 font-semibold hover:underline text-sm'
             >
               Voir tout
@@ -80,7 +80,7 @@ const LandingProducts = () => {
             Prenez rendez-vous : nous vous orientons vers les produits qui vous
             conviennent.
           </p>
-          <Link to='/auth/login'>
+          <Link to='/#reservation'>
             <span className='inline-flex w-fit items-center justify-center rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-sm hover:bg-rose-600'>
               Réserver un rendez-vous
             </span>

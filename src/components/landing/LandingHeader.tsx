@@ -1,25 +1,23 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { AppLogo } from '../ui';
 import { useEffect, useState } from 'react';
 import { Menu } from 'lucide-react';
 import LandingMobileNav from './LandingMobileNav';
 import { motion } from 'framer-motion';
 import { useAuth } from '../../hooks/useAuth';
-
-const navItems: { label: string; href: string; active?: boolean }[] = [
-  { label: 'Accueil', href: '#', active: true },
-  { label: 'À propos', href: '#experience', active: false },
-  { label: 'Prestations', href: '#prestations', active: false },
-  { label: 'Produits', href: '#produits', active: false },
-  { label: 'Contact', href: '#contact', active: false },
-];
+import {
+  LANDING_NAV_ITEMS,
+  landingAnchorHref,
+  reservationHref,
+} from './landingNav';
 
 const LandingHeader = () => {
+  const { pathname } = useLocation();
   const [open, setOpen] = useState(false);
   const [stuck, setStuck] = useState(false);
   const { user } = useAuth();
 
-  function close() {
+  function closeMenu() {
     setOpen(false);
   }
 
@@ -51,24 +49,33 @@ const LandingHeader = () => {
             </div>
 
             <nav className='hidden items-center gap-6 text-sm font-semibold text-white/80 lg:flex'>
-              {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  className={[
-                    'relative py-2 transition-colors hover:text-rose-500',
-                    item.active ? 'text-rose-500' : '',
-                  ].join(' ')}
-                >
-                  {item.label}
-                  {/* <span
-                  className={[
-                    'absolute -bottom-1 left-0 h-0.5 w-full rounded-full',
-                    item.active ? 'bg-rose-500' : 'bg-transparent',
-                  ].join(' ')}
-                /> */}
-                </a>
-              ))}
+              {LANDING_NAV_ITEMS.map((item) => {
+                const isActive = 'to' in item && pathname === item.to;
+                if ('to' in item) {
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.to}
+                      className={[
+                        'relative py-2 transition-colors hover:text-rose-500',
+                        isActive ? 'text-rose-500' : '',
+                      ].join(' ')}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
+                const h = landingAnchorHref(pathname, item.hash);
+                return (
+                  <a
+                    key={item.label}
+                    href={h}
+                    className='relative py-2 transition-colors hover:text-rose-500'
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
             </nav>
 
             <div className='flex items-center gap-2'>
@@ -86,18 +93,18 @@ const LandingHeader = () => {
               >
                 {user ? 'Mon compte' : 'Se connecter'}
               </Link>
-              <Link
-                to='/auth/login'
+              <a
+                href={reservationHref(pathname)}
                 className='hidden lg:inline-flex items-center justify-center rounded-full bg-rose-500 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-rose-600'
               >
                 Prendre RDV
-              </Link>
+              </a>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {open ? <LandingMobileNav close={close} navItems={navItems} /> : null}
+      {open ? <LandingMobileNav close={closeMenu} pathname={pathname} /> : null}
     </header>
   );
 };

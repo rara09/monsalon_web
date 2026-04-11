@@ -2,13 +2,18 @@ import { Link } from 'react-router-dom';
 import { X } from 'lucide-react';
 import { AppLogo } from '../ui';
 import { AnimatePresence, motion } from 'framer-motion';
+import {
+  LANDING_NAV_ITEMS,
+  landingAnchorHref,
+  reservationHref,
+} from './landingNav';
 
 type LandingMobileNavProps = {
   close: () => void;
-  navItems: { label: string; href: string; active?: boolean }[];
+  pathname: string;
 };
 
-const LandingMobileNav = ({ close, navItems }: LandingMobileNavProps) => {
+const LandingMobileNav = ({ close, pathname }: LandingMobileNavProps) => {
   return (
     <AnimatePresence>
       <motion.div
@@ -51,19 +56,34 @@ const LandingMobileNav = ({ close, navItems }: LandingMobileNavProps) => {
 
           <div className='flex flex-1 flex-col items-center justify-center px-6 text-center'>
             <nav className='space-y-3'>
-              {navItems.map((item) => (
-                <a
-                  key={item.label}
-                  href={item.href}
-                  onClick={close}
-                  className={[
-                    'block text-3xl font-semibold tracking-tight text-white/90 transition-colors hover:text-rose-300',
-                    item.active ? 'text-rose-300' : '',
-                  ].join(' ')}
-                >
-                  {item.label}
-                </a>
-              ))}
+              {LANDING_NAV_ITEMS.map((item) => {
+                const isActive = 'to' in item && pathname === item.to;
+                if ('to' in item) {
+                  return (
+                    <Link
+                      key={item.label}
+                      to={item.to}
+                      onClick={close}
+                      className={[
+                        'block text-3xl font-semibold tracking-tight text-white/90 transition-colors hover:text-rose-300',
+                        isActive ? 'text-rose-300' : '',
+                      ].join(' ')}
+                    >
+                      {item.label}
+                    </Link>
+                  );
+                }
+                return (
+                  <a
+                    key={item.label}
+                    href={landingAnchorHref(pathname, item.hash)}
+                    onClick={close}
+                    className='block text-3xl font-semibold tracking-tight text-white/90 transition-colors hover:text-rose-300'
+                  >
+                    {item.label}
+                  </a>
+                );
+              })}
             </nav>
 
             <div className='mt-12 w-full max-w-sm space-y-3'>
@@ -74,13 +94,13 @@ const LandingMobileNav = ({ close, navItems }: LandingMobileNavProps) => {
               >
                 Se connecter
               </Link>
-              <Link
-                to='/auth/login'
+              <a
+                href={reservationHref(pathname)}
                 onClick={close}
                 className='inline-flex w-full items-center justify-center rounded-2xl bg-rose-500 px-5 py-4 text-base font-semibold text-white shadow-sm hover:bg-rose-600'
               >
                 Prendre RDV
-              </Link>
+              </a>
             </div>
           </div>
         </motion.div>

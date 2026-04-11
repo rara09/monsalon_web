@@ -11,6 +11,7 @@ import {
   Wallet,
   Receipt,
   ClipboardList,
+  Images,
 } from 'lucide-react';
 import AppLogo from '../ui/AppLogo';
 
@@ -20,6 +21,7 @@ const links = [
   { to: '/appointments', label: 'Rendez-vous', icon: CalendarClock },
   { to: '/services', label: 'Prestations', icon: Scissors },
   { to: '/catalog', label: 'Catalogue', icon: ClipboardList },
+  { to: '/gallery', label: 'Galerie', icon: Images },
   { to: '/sales', label: 'Ventes', icon: ShoppingBag },
   { to: '/clients', label: 'Clients', icon: Users },
   { to: '/stock', label: 'Stock', icon: Boxes },

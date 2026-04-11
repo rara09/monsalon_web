@@ -35,3 +35,5 @@ export { default as LandingServices } from './landing/LandingServices';
 export { default as LandingProducts } from './landing/LandingProducts';
 export { default as LandingTestimonials } from './landing/LandingTestimonials';
 export { default as LandingContact } from './landing/LandingContact';
+export { default as LandingInstituteServices } from './landing/LandingInstituteServices';
+export { default as LandingGallery } from './landing/LandingGallery';

@@ -124,13 +124,21 @@ const LandingServices = () => {
           </h2>
         </div>
         <div className='text-end'>
-          <a
-            href='/auth/login'
-            className='text-rose-300 font-semibold hover:underline text-sm'
-          >
-            Voir tout
-          </a>
-          <p className='max-w-md text-sm text-white/70'>
+          <div className='flex flex-wrap items-center justify-end gap-x-4 gap-y-1'>
+            <a
+              href='/catalogue'
+              className='text-rose-300 font-semibold hover:underline text-sm'
+            >
+              Catalogue complet
+            </a>
+            <a
+              href='#reservation'
+              className='text-rose-300 font-semibold hover:underline text-sm'
+            >
+              Réserver
+            </a>
+          </div>
+          <p className='mt-1 max-w-md text-sm text-white/70'>
             Choisissez votre soin et réservez en quelques minutes.
           </p>
         </div>
@@ -200,15 +208,18 @@ const LandingServices = () => {
 
               <div className='my-5 px-3 flex items-center justify-between'>
                 <a
-                  href='/auth/login'
+                  href='#reservation'
                   className='text-xs font-semibold text-white/70 hover:text-white'
                 >
                   Durée → {p.durationLabel}
                 </a>
-                <span className='inline-flex items-center gap-2 text-xs font-semibold text-rose-300'>
+                <a
+                  href='#reservation'
+                  className='inline-flex items-center gap-2 text-xs font-semibold text-rose-300 hover:text-rose-200'
+                >
                   <span className='h-2 w-2 rounded-full bg-rose-500' />
                   Prendre RDV
-                </span>
+                </a>
               </div>
             </motion.div>
           ))}

@@ -11,12 +11,26 @@ import ExpensesPage from '../pages/ExpensesPage';
 import DebtsPage from '../pages/DebtsPage';
 import NotificationsPage from '../pages/NotificationsPage';
 import UsersPage from '../pages/UsersPage';
+import GalleryPage from '../pages/GalleryPage';
 import LoginPage from '../pages/auth/LoginPage';
 import RegisterPage from '../pages/auth/RegisterPage';
 import ProfilePage from '../pages/ProfilePage';
 import SettingsPage from '../pages/SettingsPage';
+import PublicSiteLayout from '../layouts/PublicSiteLayout';
+import PublicCatalogPage from '../pages/PublicCatalogPage';
+import PublicProductsPage from '../pages/PublicProductsPage';
 
 export const router = createBrowserRouter([
+  {
+    path: '/catalogue',
+    element: <PublicSiteLayout />,
+    children: [{ index: true, element: <PublicCatalogPage /> }],
+  },
+  {
+    path: '/produits',
+    element: <PublicSiteLayout />,
+    children: [{ index: true, element: <PublicProductsPage /> }],
+  },
   {
     path: '/',
     element: <RootLayout />,
@@ -64,6 +78,10 @@ export const router = createBrowserRouter([
       {
         path: 'users',
         element: <UsersPage />,
+      },
+      {
+        path: 'gallery',
+        element: <GalleryPage />,
       },
       {
         path: 'profile',

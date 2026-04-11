@@ -1,4 +1,3 @@
-import { Link } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useMemo, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -200,12 +199,12 @@ const LandingHero = () => {
                   >
                     {active.ctaLabel}
                   </a>
-                  <Link
-                    to='/auth/login'
+                  <a
+                    href='#reservation'
                     className='inline-flex items-center justify-center rounded-sm border border-white/20 bg-white/5 px-7 py-3 text-sm font-semibold text-white hover:bg-white/10'
                   >
                     Prendre RDV
-                  </Link>
+                  </a>
                 </motion.div>
               </motion.div>
             </AnimatePresence>
